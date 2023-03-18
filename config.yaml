@@ -1,0 +1,7 @@
+Server:
+    Listen: "127.0.0.1"
+    Port: 8999
+Mqtt:
+  Addr: "tcp://10.10.1.10:1883"
+  Topic: "servo"
+  ClientID: "mqtt-client"
