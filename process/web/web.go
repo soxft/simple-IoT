@@ -16,18 +16,31 @@ func Init() {
 
 	engine.Use(middleware.Cors())
 
+	light := engine.Group("/light")
+	light.Use(middleware.AuthPermission())
 	{
-		engine.GET("/light", controller.GetLight)
-		engine.POST("/light/:status", controller.SetLight)
+		light.GET("", controller.GetLight)
+		light.POST("/:status", controller.SetLight)
 	}
 
+	door := engine.Group("/door")
+	door.Use(middleware.AuthPermission())
 	{
-		engine.POST("/door", controller.SetDoor)
+		door.POST("", controller.SetDoor)
 	}
 
+	device := engine.Group("/device")
+	device.Use(middleware.AuthPermission())
 	{
-		engine.GET("/device/last_seen", controller.GetDeviceLastOnline)
-		engine.POST("/device/ping", controller.DoPing)
+		device.GET("/last_seen", controller.GetDeviceLastOnline)
+		device.POST("/ping", controller.DoPing)
+	}
+
+	auth := engine.Group("/auth")
+	{
+		engine.POST("/login", controller.Login)
+		auth.Use(middleware.AuthPermission())
+		auth.GET("/permission", controller.CheckPermission)
 	}
 
 	engine.GET("/", func(c *gin.Context) {

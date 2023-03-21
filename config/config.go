@@ -11,6 +11,7 @@ var (
 	C       *Cfg
 	Server  ServerCfg
 	Mqtt    MqttCfg
+	Jwt     JwtCfg
 )
 
 func Init() {
@@ -28,4 +29,5 @@ func Init() {
 
 	Server = C.Server
 	Mqtt = C.Mqtt
+	Jwt = C.Jwt
 }
