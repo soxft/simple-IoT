@@ -47,8 +47,8 @@ func Init() {
 		c.Redirect(302, "/web")
 	})
 
-	engine.Static("/_next", "public/_next")
-	engine.Static("/web", "public")
+	//engine.Static("/_next", "public/_next")
+	//engine.Static("/web", "public")
 
 	listenAddr := config.Server.Listen + ":" + strconv.Itoa(config.Server.Port)
 	log.Println("Web server is listening on " + listenAddr)
