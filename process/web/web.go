@@ -24,11 +24,18 @@ func Init() {
 	{
 		engine.POST("/door", controller.SetDoor)
 	}
-	
+
 	{
 		engine.GET("/device/last_seen", controller.GetDeviceLastOnline)
 		engine.POST("/device/ping", controller.DoPing)
 	}
+
+	engine.GET("/", func(c *gin.Context) {
+		c.Redirect(302, "/web")
+	})
+
+	engine.Static("/_next", "public/_next")
+	engine.Static("/web", "public")
 
 	listenAddr := config.Server.Listen + ":" + strconv.Itoa(config.Server.Port)
 	log.Println("Web server is listening on " + listenAddr)
