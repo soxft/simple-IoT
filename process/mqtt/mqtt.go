@@ -2,6 +2,7 @@ package mqtt
 
 import (
 	"door/config"
+	"door/global"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"log"
 	"time"
@@ -9,9 +10,13 @@ import (
 
 var Client mqtt.Client
 
-//var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
-//	log.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
-//}
+var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+	payload := string(msg.Payload())
+	log.Println("Received message: " + payload)
+	if payload == "pong" {
+		global.DeviceLastOnlineTime = time.Now().Unix()
+	}
+}
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
 	log.Println("Connected")
@@ -36,39 +41,23 @@ func connect() mqtt.Client {
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
+
+	// subscribe
+	client.Subscribe(config.Mqtt.Topic, 1, messagePubHandler)
 	return client
 }
 
 func Init() {
 	Client = connect()
+	Publish(config.Mqtt.Topic, "ping")
 }
 
-func Publish(act string) {
+func Publish(topic, data string) {
 	if !Client.IsConnected() {
 		Client = connect()
 	}
-
-	if act == "off" {
-		token := Client.Publish(config.Mqtt.Topic, 0, false, "130")
-		token.Wait()
-
-		time.Sleep(time.Millisecond * 200)
-
-		token = Client.Publish(config.Mqtt.Topic, 0, false, "105")
-		token.Wait()
-
-		log.Println("off")
-		return
-	}
-
-	token := Client.Publish(config.Mqtt.Topic, 0, false, "80")
+	token := Client.Publish(topic, 0, false, data)
 	token.Wait()
-
-	time.Sleep(time.Millisecond * 200)
-
-	token = Client.Publish(config.Mqtt.Topic, 0, false, "105")
-	token.Wait()
-	log.Println("on")
 }
 
 //func publish(client mqtt.Client) {

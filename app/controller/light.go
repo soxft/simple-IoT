@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"door/config"
 	"door/lib/apiutil"
 	"door/process/mqtt"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 var lightStatus = false
@@ -25,10 +27,14 @@ func SetLight(c *gin.Context) {
 	status := c.Param("status")
 	if status == "1" {
 		lightStatus = true
-		mqtt.Publish("on")
+		mqtt.Publish(config.Mqtt.Topic, "80")
+		time.Sleep(time.Second)
+		mqtt.Publish(config.Mqtt.Topic, "90")
 	} else {
 		lightStatus = false
-		mqtt.Publish("off")
+		mqtt.Publish(config.Mqtt.Topic, "100")
+		time.Sleep(time.Second)
+		mqtt.Publish(config.Mqtt.Topic, "90")
 	}
 
 	api := apiutil.New(c)
