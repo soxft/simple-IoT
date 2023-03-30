@@ -8,3 +8,6 @@ Mqtt:
   Addr: "tcp://10.10.1.10:1883"
   Topic: "servo"
   ClientID: "mqtt-client"
+Door:
+  OpenAngle: 130 # 开门角度
+  OpenDelay: 1500 # 开门延时

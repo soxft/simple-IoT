@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
@@ -12,9 +13,12 @@ var (
 	Server  ServerCfg
 	Mqtt    MqttCfg
 	Jwt     JwtCfg
+	Door    DoorCfg
 )
 
 func Init() {
+	flag.StringVar(&CfgPath, "c", "config.yaml", "config file path")
+	flag.Parse()
 
 	C = &Cfg{}
 	file, err := os.ReadFile(CfgPath)
@@ -30,4 +34,5 @@ func Init() {
 	Server = C.Server
 	Mqtt = C.Mqtt
 	Jwt = C.Jwt
+	Door = C.Door
 }
